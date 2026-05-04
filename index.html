@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz — Le Subjonctif Présent &amp; Passé | FLE B1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --indigo: #2d1e6b;
+      --indigo-light: #3d2d88;
+      --violet: #6c3fc5;
+      --gold: #d4960a;
+      --gold-light: #f7dfa0;
+      --cream: #fbf9ff;
+      --cream-dark: #ede8fa;
+      --text-dark: #1e1535;
+      --text-light: #7a6e9a;
+      --success-bg: #edf7ef;
+      --success-border: #52b06a;
+      --error-bg: #fef0ef;
+      --error-border: #e06050;
+      --radius: 14px;
+    }
+    body {
+      background: linear-gradient(150deg, #f3f0ff 0%, #fdf9ff 100%);
+      font-family: 'Source Sans 3', sans-serif;
+      color: var(--text-dark);
+      min-height: 100vh;
+      padding: 2rem 1rem 4rem;
+    }
+    #quiz-wrap { max-width: 740px; margin: 0 auto; }
+
+    .header-bar {
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
+      border-radius: var(--radius);
+      padding: 2.25rem 2.5rem;
+      text-align: center;
+      margin-bottom: 1.75rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 6px 28px rgba(45,30,107,0.22);
+    }
+    .header-bar::before {
+      content: ''; position: absolute; top: -50px; right: -50px;
+      width: 180px; height: 180px; border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+    }
+    .header-bar::after {
+      content: ''; position: absolute; bottom: -40px; left: -40px;
+      width: 130px; height: 130px; border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
+    .badge {
+      display: inline-block; background: var(--gold); color: #fff;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 4px 14px;
+      border-radius: 20px; margin-bottom: 0.8rem;
+    }
+    .quiz-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px; font-weight: 700;
+      color: #fff; line-height: 1.25;
+    }
+    .quiz-sub { font-size: 14px; color: rgba(255,255,255,0.58); margin-top: 0.5rem; }
+    .tabs { display: flex; justify-content: center; gap: 10px; margin-top: 1.1rem; }
+    .tab-pill {
+      background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.85);
+      font-size: 12px; font-weight: 600; padding: 4px 14px;
+      border-radius: 20px; border: 1px solid rgba(255,255,255,0.18);
+    }
+
+    .progress-row { display: flex; align-items: center; gap: 14px; margin-bottom: 1.5rem; }
+    .progress-bar { flex: 1; height: 7px; background: #ddd4f5; border-radius: 10px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--violet); border-radius: 10px; transition: width 0.4s ease; }
+    .progress-label { font-size: 13px; color: var(--text-light); white-space: nowrap; min-width: 55px; text-align: right; }
+
+    .question-card {
+      background: var(--cream);
+      border: 1px solid rgba(108,63,197,0.12);
+      border-radius: var(--radius);
+      padding: 2rem 2.25rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 14px rgba(45,30,107,0.07);
+    }
+    .q-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 0.5rem; }
+    .q-num { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--violet); }
+    .q-type {
+      font-size: 11px; font-weight: 600; padding: 2px 10px;
+      border-radius: 10px; background: var(--cream-dark); color: var(--indigo);
+    }
+    .q-type.present { background: #dff0fb; color: #1560a0; }
+    .q-type.passe   { background: #f3e0ff; color: #7a0099; }
+    .q-topic { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); margin-bottom: 0.7rem; }
+    .q-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px; font-weight: 400;
+      color: var(--indigo); line-height: 1.6; margin-bottom: 1.75rem;
+    }
+    .q-text u { text-decoration-color: var(--gold); text-underline-offset: 4px; }
+
+    .choices { display: flex; flex-direction: column; gap: 11px; }
+    .choice-btn {
+      background: #fff;
+      border: 1px solid rgba(108,63,197,0.15);
+      border-radius: 10px; padding: 0.9rem 1.2rem;
+      text-align: left; cursor: pointer;
+      font-size: 15px; font-family: 'Source Sans 3', sans-serif;
+      color: var(--text-dark);
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .choice-btn:hover:not(:disabled) { border-color: var(--violet); background: #f3eeff; transform: translateX(3px); }
+    .choice-letter {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--cream-dark); color: var(--indigo);
+      font-size: 12px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: background 0.15s, color 0.15s;
+    }
+    .choice-btn.correct { background: var(--success-bg); border-color: var(--success-border); }
+    .choice-btn.correct .choice-letter { background: var(--success-border); color: #fff; }
+    .choice-btn.wrong   { background: var(--error-bg);   border-color: var(--error-border); }
+    .choice-btn.wrong .choice-letter   { background: var(--error-border);   color: #fff; }
+    .choice-btn:disabled { cursor: default; transform: none; }
+
+    .explication-box { border-radius: var(--radius); padding: 1.35rem 1.6rem; margin-top: 1.25rem; display: none; }
+    .explication-box.show { display: block; }
+    .explication-box.good { background: var(--success-bg); border: 1px solid var(--success-border); }
+    .explication-box.bad  { background: var(--error-bg);   border: 1px solid var(--error-border); }
+    .exp-header { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; margin-bottom: 0.9rem; }
+    .exp-header.good { color: #1d6e32; }
+    .exp-header.bad  { color: #b03020; }
+    .exp-icon { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+    .exp-icon.good { background: var(--success-border); color: #fff; }
+    .exp-icon.bad  { background: var(--error-border);   color: #fff; }
+    .exp-body { font-size: 14px; line-height: 1.8; color: var(--text-dark); }
+    .exp-body strong { font-weight: 600; }
+    .exp-body em { font-style: italic; color: var(--indigo-light); }
+    .rule-pill {
+      display: inline-block; background: rgba(108,63,197,0.1);
+      border-radius: 5px; padding: 1px 8px;
+      font-size: 13px; font-family: 'Playfair Display', serif; color: var(--indigo);
+    }
+    .conj-box {
+      display: inline-block; background: #fff;
+      border: 1px solid rgba(108,63,197,0.2);
+      border-radius: 6px; padding: 0.6rem 1rem;
+      margin-top: 0.7rem; font-size: 13px;
+      font-family: 'Playfair Display', serif;
+      color: var(--indigo); line-height: 1.8;
+    }
+
+    .next-btn {
+      background: var(--indigo); color: #fff; border: none;
+      border-radius: 10px; padding: 0.9rem 1.75rem;
+      font-size: 14px; font-weight: 600;
+      font-family: 'Source Sans 3', sans-serif;
+      cursor: pointer; margin-top: 1.4rem;
+      transition: background 0.15s, transform 0.1s; display: none;
+    }
+    .next-btn.show { display: inline-block; }
+    .next-btn:hover { background: var(--indigo-light); transform: translateY(-1px); }
+
+    .score-card {
+      background: linear-gradient(135deg, var(--indigo) 0%, var(--violet) 100%);
+      border-radius: var(--radius); padding: 3rem 2.5rem;
+      text-align: center; display: none;
+      box-shadow: 0 6px 32px rgba(45,30,107,0.22);
+    }
+    .score-card.show { display: block; }
+    .score-stars { font-size: 34px; margin-bottom: 1rem; }
+    .score-big { font-family: 'Playfair Display', serif; font-size: 68px; font-weight: 700; color: var(--gold-light); line-height: 1; }
+    .score-total { font-size: 24px; color: rgba(255,255,255,0.42); }
+    .score-msg { font-size: 16px; color: rgba(255,255,255,0.82); margin-top: 1.1rem; line-height: 1.65; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .score-recap { background: rgba(255,255,255,0.07); border-radius: 10px; padding: 1.25rem 1.5rem; margin-top: 2rem; text-align: left; }
+    .recap-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gold-light); margin-bottom: 1rem; }
+    .recap-item { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: rgba(255,255,255,0.72); padding: 6px 0; border-bottom: 0.5px solid rgba(255,255,255,0.08); }
+    .recap-item:last-child { border-bottom: none; }
+    .recap-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+    .recap-dot.ok { background: var(--success-border); }
+    .recap-dot.ko { background: var(--error-border); }
+    .restart-btn {
+      background: var(--gold); color: #fff; border: none;
+      border-radius: 10px; padding: 0.95rem 2.5rem;
+      font-size: 15px; font-weight: 600;
+      font-family: 'Source Sans 3', sans-serif;
+      cursor: pointer; margin-top: 2rem;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .restart-btn:hover { background: #b5800a; transform: translateY(-1px); }
+
+    @media (max-width: 480px) {
+      .question-card { padding: 1.5rem 1.25rem; }
+      .header-bar    { padding: 1.5rem 1.25rem; }
+      .quiz-title    { font-size: 20px; }
+      .q-text        { font-size: 16px; }
+      .score-big     { font-size: 52px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="quiz-wrap">
+  <div class="header-bar">
+    <div class="badge">FLE — Niveau B1</div>
+    <div class="quiz-title">Le Subjonctif Présent &amp; Passé</div>
+    <div class="quiz-sub">Formes &middot; emplois &middot; déclencheurs &mdash; 20 questions</div>
+    <div class="tabs">
+      <span class="tab-pill">🔵 Subjonctif présent (Q1–Q10)</span>
+      <span class="tab-pill">🟣 Subjonctif passé (Q11–Q20)</span>
+    </div>
+  </div>
+
+  <div class="progress-row">
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="progress-label" id="prog-label">0 / 20</div>
+  </div>
+
+  <div id="question-area"></div>
+  <div id="score-area" class="score-card"></div>
+</div>
+
+<script>
+const Q = [
+  // ─── SUBJONCTIF PRÉSENT ───────────────────────────────────────────────────
+  {
+    type:"present", typeLabel:"Subjonctif présent",
+    topic:"Formation — verbe irrégulier <em>faire</em>",
+    text:"Il faut que tu <u>_____</u> tes devoirs avant de sortir.",
+    choices:["fais","feras","fasses","ferais"], correct:2,
+    exp:{
+      verdict:"La bonne réponse est <em>fasses</em>.",
+      rule:`<strong>Règle :</strong> Après <em>il faut que</em>, on utilise le <strong>subjonctif présent</strong>. C'est l'un des déclencheurs les plus fréquents.<br><br>
+<em>Faire</em> est entièrement irrégulier au subjonctif :<br>
+<span class="conj-box">que je fasse &nbsp;· que tu fasses &nbsp;· qu'il fasse<br>que nous fassions &nbsp;· que vous fassiez &nbsp;· qu'ils fassent</span><br><br>
+<strong>Principaux déclencheurs :</strong> <em>il faut que, il est nécessaire que, je veux que, je souhaite que, j'exige que…</em>`
+    }
+  },
+  {
+    type:"present", typeLabel:"Subjonctif présent",
+    topic:"Formation — verbe irrégulier <em>être</em>",
+    text:"Je voudrais que vous <u>_____</u> à l'heure demain.",
+    choices:["êtes","soyez","serez","étiez"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>soyez</em>.",
+      rule:`<strong>Règle :</strong> Les verbes de <strong>volonté</strong> (<em>vouloir, souhaiter, désirer, aimer que…</em>) déclenchent le subjonctif.<br><br>
+<em>Être</em> est entièrement irrégulier au subjonctif :<br>
+<span class="conj-box">que je sois &nbsp;· que tu sois &nbsp;· qu'il soit<br>que nous soyons &nbsp;· que vous soyez &nbsp;· qu'ils soient</span><br><br>
+À ne pas confondre avec <em>vous êtes</em> (indicatif présent) ou <em>vous serez</em> (futur simple).`
+    }
+  },
+  {
+    type:"present", typeLabel:"Subjonctif présent",
+    topic:"Expression d'un sentiment — joie",
+    text:"Je suis content que tu <u>_____</u> avec nous ce soir.",
+    choices:["viendras","viens","viennes","venais"], correct:2,
+    exp:{
+      verdict:"La bonne réponse est <em>viennes</em>.",
+      rule:`<strong>Règle :</strong> Les expressions de <strong>sentiment</strong> déclenchent le subjonctif : <em>être content que, avoir peur que, regretter que, être surpris que, être triste que…</em><br><br>
+<em>Venir</em> au subjonctif présent :<br>
+<span class="conj-box">que je vienne &nbsp;· que tu viennes &nbsp;· qu'il vienne<br>que nous venions &nbsp;· que vous veniez &nbsp;· qu'ils viennent</span>`
+    }
+  },
+  {
+    type:"present", typeLabel:"Subjonctif présent",
+    topic:"Conjonction de concession — <em>bien que</em>",
+    text:"Bien qu'il <u>_____</u> fatigué, il continue à travailler.",
+    choices:["est","soit","sera","était"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>soit</em>.",
+      rule:`<strong>Règle :</strong> Les conjonctions de <strong>concession</strong> sont toujours suivies du subjonctif : <em>bien que, quoique, encore que…</em><br><br>
+<em>Bien que + subjonctif</em> s'oppose à <em>même si + indicatif</em> :<br>
+<span class="conj-box">Bien qu'il <strong>soit</strong> fatigué… (subjonctif, concession)<br>Même s'il <strong>est</strong> fatigué… (indicatif, condition réelle)</span>`
+    }
+  },
+  {
+    type:"present", typeLabel:"Subjonctif présent",
+    topic:"Expression impersonnelle — <em>il est important que</em>",
+    text:"Il est important que nous <u>_____</u> les résultats demain.",
+    choices:["savons","sachions","saurons","saurions"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>sachions</em>.",
+      rule:`<strong>Règle :</strong> Les <strong>expressions impersonnelles</strong> <em>il est + adjectif + que</em> déclenchent le subjonctif : <em>il est important que, il est essentiel que, il est possible que, il est dommage que…</em><br><br>
+<em>Savoir</em> au subjonctif :<br>
+<span class="conj-box">que je sache &nbsp;· que tu saches &nbsp;· qu'il sache<br>que nous sachions &nbsp;· que vous sachiez &nbsp;· qu'ils sachent</span><br><br>
+<strong>Exception :</strong> <em>il est certain que, il est évident que, il est probable que</em> → indicatif.`
+    }
+  },
+  {
+    type:"present", typeLabel:"Subjonctif présent",
+    topic:"Verbe de doute — <em>douter que</em>",
+    text:"Je doute qu'il <u>_____</u> la vérité.",
+    choices:["dit","dise","dira","dirait"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>dise</em>.",
+      rule:`<strong>Règle :</strong> Les verbes exprimant le <strong>doute ou la négation</strong> déclenchent le subjonctif : <em>douter que, ne pas croire que, ne pas penser que, nier que…</em><br><br>
+<em>Dire</em> au subjonctif :<br>
+<span class="conj-box">que je dise &nbsp;· que tu dises &nbsp;· qu'il dise<br>que nous disions &nbsp;· que vous disiez &nbsp;· qu'ils disent</span><br><br>
+<strong>Attention :</strong> <em>croire que</em> et <em>penser que</em> à la forme <em>affirmative</em> → indicatif.`
+    }
+  },
+  {
+    type:"present", typeLabel:"Subjonctif présent",
+    topic:"Conjonction de temps — <em>avant que</em>",
+    text:"Nous partirons avant qu'il <u>_____</u> nuit.",
+    choices:["fait","fasse","fera","ferait"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>fasse</em>.",
+      rule:`<strong>Règle :</strong> Certaines conjonctions de <strong>temps</strong> sont toujours suivies du subjonctif :<br>
+<span class="conj-box">Subjonctif : <em>avant que &nbsp;· jusqu'à ce que &nbsp;· en attendant que</em><br>Indicatif : <em>après que &nbsp;· pendant que &nbsp;· depuis que</em></span><br><br>
+<em>Faire</em> → <em>fasse</em> (subjonctif présent, 3ᵉ pers. sing.).`
+    }
+  },
+  {
+    type:"present", typeLabel:"Subjonctif présent",
+    topic:"Proposition relative — antécédent indéfini",
+    text:"Je cherche un appartement qui <u>_____</u> un balcon.",
+    choices:["a","ait","aura","avait"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>ait</em>.",
+      rule:`<strong>Règle :</strong> Dans une relative dont l'antécédent est <strong>indéfini ou hypothétique</strong> (on ne sait pas s'il existe), on utilise le subjonctif.<br><br>
+Comparez :<br>
+<span class="conj-box">Je cherche un appartement qui <strong>ait</strong> un balcon → inconnu, subjonctif<br>J'ai trouvé un appartement qui <strong>a</strong> un balcon → réel, indicatif</span><br><br>
+<em>Avoir</em> au subjonctif : <em>que j'aie, que tu aies, qu'il ait, que nous ayons, que vous ayez, qu'ils aient</em>`
+    }
+  },
+  {
+    type:"present", typeLabel:"Subjonctif présent",
+    topic:"Superlatif / <em>le seul</em> — subjonctif",
+    text:"C'est le seul candidat qui <u>_____</u> toutes les conditions.",
+    choices:["remplit","remplisse","remplira","remplissait"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>remplisse</em>.",
+      rule:`<strong>Règle :</strong> Après un <strong>superlatif relatif</strong> (<em>le plus, le moins, le meilleur…</em>) ou <em>le seul, l'unique, le premier, le dernier</em>, on utilise le subjonctif (appréciation subjective).<br><br>
+<em>Remplir</em> au subjonctif présent :<br>
+<span class="conj-box">que je remplisse &nbsp;· que tu remplisses &nbsp;· qu'il remplisse<br>que nous remplissions &nbsp;· que vous remplissiez &nbsp;· qu'ils remplissent</span>`
+    }
+  },
+  {
+    type:"present", typeLabel:"Subjonctif présent",
+    topic:"Conjonction de but — <em>pour que</em>",
+    text:"Il parle lentement pour que tout le monde <u>_____</u>.",
+    choices:["comprend","comprenne","comprendra","comprendrait"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>comprenne</em>.",
+      rule:`<strong>Règle :</strong> Les conjonctions de <strong>but</strong> sont toujours suivies du subjonctif : <em>pour que, afin que, de peur que, de crainte que…</em><br><br>
+<em>Comprendre</em> au subjonctif :<br>
+<span class="conj-box">que je comprenne &nbsp;· que tu comprennes &nbsp;· qu'il comprenne<br>que nous comprenions &nbsp;· que vous compreniez &nbsp;· qu'ils comprennent</span><br><br>
+<strong>Rappel :</strong> si les deux sujets sont identiques → infinitif : <em>il parle lentement pour <strong>être compris</strong></em>.`
+    }
+  },
+
+  // ─── SUBJONCTIF PASSÉ ─────────────────────────────────────────────────────
+  {
+    type:"passe", typeLabel:"Subjonctif passé",
+    topic:"Formation avec <em>avoir</em> — sentiment",
+    text:"Je suis heureux qu'elle <u>_____</u> son examen.",
+    choices:["a réussi","ait réussi","avait réussi","aura réussi"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>ait réussi</em>.",
+      rule:`<strong>Formation du subjonctif passé :</strong><br>
+<span class="rule-pill">subjonctif présent de avoir/être + participe passé</span><br><br>
+Avec <em>avoir</em> :<br>
+<span class="conj-box">que j'aie réussi &nbsp;· que tu aies réussi &nbsp;· qu'il ait réussi<br>que nous ayons réussi &nbsp;· que vous ayez réussi &nbsp;· qu'ils aient réussi</span><br><br>
+<strong>Emploi :</strong> le subjonctif passé exprime une action <strong>antérieure et accomplie</strong> par rapport à la principale.<br>
+<em>Je suis heureux</em> (maintenant) + <em>elle a réussi</em> (avant) → <em>qu'elle ait réussi</em>.`
+    }
+  },
+  {
+    type:"passe", typeLabel:"Subjonctif passé",
+    topic:"Expression impersonnelle — action passée",
+    text:"Il est dommage que vous <u>_____</u> cette occasion.",
+    choices:["avez manqué","ayez manqué","avaient manqué","aurez manqué"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>ayez manqué</em>.",
+      rule:`<strong>Règle :</strong> <em>Il est dommage que</em> déclenche le subjonctif. L'action de manquer une occasion est <strong>antérieure</strong> au regret exprimé → subjonctif passé.<br><br>
+<em>Manquer</em> → auxiliaire <em>avoir</em> :<br>
+<span class="conj-box">que j'aie manqué &nbsp;· que tu aies manqué &nbsp;· qu'il ait manqué<br>que nous ayons manqué &nbsp;· que vous ayez manqué &nbsp;· qu'ils aient manqué</span>`
+    }
+  },
+  {
+    type:"passe", typeLabel:"Subjonctif passé",
+    topic:"Concession — auxiliaire <em>être</em>",
+    text:"Bien qu'il <u>_____</u> très tôt, il est arrivé en retard.",
+    choices:["est parti","soit parti","était parti","sera parti"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>soit parti</em>.",
+      rule:`<strong>Règle :</strong> <em>Bien que</em> → subjonctif. Partir est <strong>antérieur</strong> à l'arrivée en retard → subjonctif passé.<br><br>
+<em>Partir</em> → auxiliaire <em>être</em> au subjonctif passé :<br>
+<span class="conj-box">que je sois parti(e) &nbsp;· que tu sois parti(e) &nbsp;· qu'il soit parti<br>que nous soyons partis &nbsp;· que vous soyez partis &nbsp;· qu'ils soient partis</span><br><br>
+<strong>Accord :</strong> avec <em>être</em>, le participe s'accorde avec le sujet.`
+    }
+  },
+  {
+    type:"passe", typeLabel:"Subjonctif passé",
+    topic:"Verbe de doute — action passée",
+    text:"Je ne pense pas qu'elle <u>_____</u> une telle erreur.",
+    choices:["a fait","ait fait","avait fait","aura fait"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>ait fait</em>.",
+      rule:`<strong>Règle :</strong> <em>Ne pas penser que</em> → subjonctif. L'erreur est un <strong>fait passé et accompli</strong> → subjonctif passé.<br><br>
+<em>Faire</em> → auxiliaire <em>avoir</em> :<br>
+<span class="conj-box">que j'aie fait &nbsp;· que tu aies fait &nbsp;· qu'il ait fait<br>que nous ayons fait &nbsp;· que vous ayez fait &nbsp;· qu'ils aient fait</span><br><br>
+<strong>Rappel :</strong> <em>je pense que</em> (affirmatif) → indicatif ; <em>je ne pense pas que</em> → subjonctif.`
+    }
+  },
+  {
+    type:"passe", typeLabel:"Subjonctif passé",
+    topic:"Superlatif — action passée + accord du P.P.",
+    text:"C'est la meilleure décision qu'il <u>_____</u> de toute sa vie.",
+    choices:["a prise","ait prise","avait prise","aura prise"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>ait prise</em>.",
+      rule:`<strong>Règle :</strong> Après un superlatif, on utilise le subjonctif. La décision est un <strong>fait passé</strong> → subjonctif passé.<br><br>
+<em>Prendre</em> → auxiliaire <em>avoir</em> + participe <em>pris</em>. Le COD <em>la décision</em> (féminin singulier) est placé avant → accord : <span class="rule-pill">prise</span>.<br><br>
+<span class="conj-box">qu'il ait prise (accord avec <em>la décision</em>, fém. sing.)</span>`
+    }
+  },
+  {
+    type:"passe", typeLabel:"Subjonctif passé",
+    topic:"Sentiment — action accomplie",
+    text:"Je suis surpris que tu ne lui <u>_____</u> pas encore la vérité.",
+    choices:["aies dit","as dit","avais dit","aurais dit"], correct:0,
+    exp:{
+      verdict:"La bonne réponse est <em>aies dit</em>.",
+      rule:`<strong>Règle :</strong> <em>Être surpris que</em> → sentiment → subjonctif. Ne pas dire la vérité est un <strong>état présent ou fait accompli</strong> → subjonctif passé.<br><br>
+<span class="conj-box">que tu aies dit</span><br><br>
+Le subjonctif passé insiste sur le <strong>résultat</strong> ou le caractère <strong>accompli</strong> de l'action (ou ici, de la non-action).`
+    }
+  },
+  {
+    type:"passe", typeLabel:"Subjonctif passé",
+    topic:"<em>Avant que</em> en contexte passé",
+    text:"Avant qu'il <u>_____</u> la pièce, personne ne lui avait parlé.",
+    choices:["quittait","ait quitté","a quitté","avait quitté"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>ait quitté</em>.",
+      rule:`<strong>Règle :</strong> <em>Avant que</em> → toujours le subjonctif. Dans un contexte passé, on utilise le <strong>subjonctif passé</strong> pour marquer l'antériorité accomplie.<br><br>
+<strong>Schéma temporel :</strong><br>
+<span class="conj-box">Personne ne lui avait parlé (plus-que-parfait)<br>→ avant qu'il ait quitté la pièce (subjonctif passé)</span>`
+    }
+  },
+  {
+    type:"passe", typeLabel:"Subjonctif passé",
+    topic:"Concession — auxiliaire <em>être</em> + sujet féminin pluriel",
+    text:"Bien qu'elles <u>_____</u> très tôt, elles n'ont pas pu tout visiter.",
+    choices:["sont arrivées","soient arrivées","étaient arrivées","seraient arrivées"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>soient arrivées</em>.",
+      rule:`<strong>Règle :</strong> <em>Bien que</em> → subjonctif. L'arrivée est <strong>antérieure</strong> au fait de ne pas pouvoir tout visiter → subjonctif passé.<br><br>
+<em>Arriver</em> → auxiliaire <em>être</em> + accord avec le sujet :<br>
+<span class="conj-box">qu'elles soient arrivées (féminin pluriel → <em>-es</em>)</span><br><br>
+<strong>Rappel accord :</strong> avec <em>être</em>, le participe passé s'accorde en genre et en nombre avec le sujet.`
+    }
+  },
+  {
+    type:"passe", typeLabel:"Subjonctif passé",
+    topic:"Expression impersonnelle — fait accompli",
+    text:"Il est possible que vous <u>_____</u> une erreur dans votre calcul.",
+    choices:["fassiez","ayez fait","avez fait","ferez"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>ayez fait</em>.",
+      rule:`<strong>Règle :</strong> <em>Il est possible que</em> → subjonctif. L'erreur est un <strong>fait déjà accompli</strong> (passé) → subjonctif passé.<br><br>
+Comparez :<br>
+<span class="conj-box">Il est possible que vous <strong>fassiez</strong> une erreur demain → subjonctif présent (futur)<br>Il est possible que vous <strong>ayez fait</strong> une erreur → subjonctif passé (accompli)</span>`
+    }
+  },
+  {
+    type:"passe", typeLabel:"Subjonctif passé",
+    topic:"Présent vs passé — choisir le bon temps",
+    text:"Je regrette que tu <u>_____</u> cette opportunité.",
+    choices:["rates","aies raté","avais raté","aurais raté"], correct:1,
+    exp:{
+      verdict:"La bonne réponse est <em>aies raté</em>.",
+      rule:`<strong>Distinction subjonctif présent / passé :</strong><br>
+<span class="conj-box">Je regrette que tu <strong>rates</strong> → subjonctif présent : l'opportunité est actuelle ou répétée<br>Je regrette que tu <strong>aies raté</strong> → subjonctif passé : l'opportunité est définitivement perdue</span><br><br>
+Dans cette phrase, le contexte implique un fait passé et accompli → <span class="rule-pill">aies raté</span>.<br><br>
+<strong>Règle générale :</strong> subjonctif passé = action <strong>antérieure</strong> et <strong>accomplie</strong> par rapport à la principale.`
+    }
+  }
+];
+
+let cur=0, score=0, answered=[], userAns=[];
+
+function render(){
+  const area=document.getElementById('question-area');
+  const scoreArea=document.getElementById('score-area');
+  if(cur>=Q.length){ area.innerHTML=''; scoreArea.classList.add('show'); showScore(); return; }
+  updateProg();
+  const q=Q[cur];
+  area.innerHTML=`
+    <div class="question-card">
+      <div class="q-meta">
+        <div class="q-num">Question ${cur+1} / ${Q.length}</div>
+        <div class="q-type ${q.type}">${q.typeLabel}</div>
+      </div>
+      <div class="q-topic">${q.topic}</div>
+      <div class="q-text">${q.text}</div>
+      <div class="choices">
+        ${q.choices.map((c,i)=>`
+          <button class="choice-btn" id="c${i}" onclick="choose(${i})">
+            <span class="choice-letter">${['A','B','C','D'][i]}</span>
+            <span>${c}</span>
+          </button>`).join('')}
+      </div>
+      <div class="explication-box" id="exp"></div>
+      <button class="next-btn" id="nxt" onclick="next()">
+        ${cur<Q.length-1?'Question suivante &rarr;':'Voir mes résultats &rarr;'}
+      </button>
+    </div>`;
+}
+
+function choose(i){
+  if(answered[cur]) return;
+  answered[cur]=true; userAns[cur]=i;
+  const q=Q[cur]; const ok=(i===q.correct);
+  if(ok) score++;
+  document.querySelectorAll('.choice-btn').forEach((b,idx)=>{
+    b.disabled=true;
+    if(idx===q.correct) b.classList.add('correct');
+    else if(idx===i&&!ok) b.classList.add('wrong');
+  });
+  const exp=document.getElementById('exp');
+  const cls=ok?'good':'bad';
+  exp.className=`explication-box show ${cls}`;
+  exp.innerHTML=`
+    <div class="exp-header ${cls}">
+      <div class="exp-icon ${cls}">${ok?'✓':'✗'}</div>
+      ${ok?'Bonne réponse !':'Pas tout à fait &mdash; bonne réponse&nbsp;: <em>'+q.choices[q.correct]+'</em>'}
+    </div>
+    <div class="exp-body">${q.exp.verdict}<br><br>${q.exp.rule}</div>`;
+  document.getElementById('nxt').classList.add('show');
+}
+
+function next(){ cur++; render(); }
+
+function updateProg(){
+  document.getElementById('prog-fill').style.width=(cur/Q.length*100)+'%';
+  document.getElementById('prog-label').textContent=cur+' / '+Q.length;
+}
+
+function showScore(){
+  document.getElementById('prog-fill').style.width='100%';
+  document.getElementById('prog-label').textContent=Q.length+' / '+Q.length;
+  const pct=score/Q.length;
+  let stars,msg;
+  if(pct===1)        {stars='★★★★★';msg='Score parfait ! Vous maîtrisez le subjonctif présent et passé.';}
+  else if(pct>=0.85) {stars='★★★★☆';msg='Excellent ! Quelques formes ou emplois restent à consolider.';}
+  else if(pct>=0.70) {stars='★★★☆☆';msg='Bon niveau. Revoyez la distinction présent/passé et les déclencheurs.';}
+  else if(pct>=0.50) {stars='★★☆☆☆';msg='Des bases solides mais des lacunes. Relisez les règles et réessayez !';}
+  else               {stars='★☆☆☆☆';msg='Le subjonctif est difficile — ne vous découragez pas, la pratique est essentielle !';}
+
+  const recap=Q.map((q,i)=>{
+    const ok=userAns[i]===q.correct;
+    return`<div class="recap-item">
+      <div class="recap-dot ${ok?'ok':'ko'}"></div>
+      <div>Q${i+1} &mdash; [${q.typeLabel}] ${q.topic}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('score-area').innerHTML=`
+    <div class="score-stars">${stars}</div>
+    <div class="score-big">${score}<span class="score-total"> / ${Q.length}</span></div>
+    <div class="score-msg">${msg}</div>
+    <div class="score-recap">
+      <div class="recap-title">Récapitulatif par question</div>
+      ${recap}
+    </div>
+    <button class="restart-btn" onclick="restart()">Recommencer le quiz</button>`;
+}
+
+function restart(){
+  cur=0; score=0; answered=[]; userAns=[];
+  document.getElementById('score-area').classList.remove('show');
+  document.getElementById('score-area').innerHTML='';
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
